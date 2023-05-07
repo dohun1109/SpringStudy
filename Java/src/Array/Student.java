@@ -77,5 +77,6 @@ public class Student {
 
     public void removeMarkAtIndex(int i) {
         marks.remove(i);
+
     }
 }
