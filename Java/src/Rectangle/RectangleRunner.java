@@ -11,5 +11,6 @@ public class RectangleRunner {
 
         rectangle.setLength(25);
         System.out.println(rectangle);
+
     }
 }
