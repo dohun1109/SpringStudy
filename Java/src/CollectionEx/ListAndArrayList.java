@@ -11,6 +11,7 @@ public class ListAndArrayList {
         List<String> wordsAl = new ArrayList<>(words);
 
         // 데이터들중 at 가 들어가는 데이터를 출력
+        // 반복만 하고 제거는 하지 않는 상황이라면 향상for문이 좋다.
         for (String word : words) {
             if (word.endsWith("at")) {
                 System.out.println(word);
