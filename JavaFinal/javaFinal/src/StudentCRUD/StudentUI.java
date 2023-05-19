@@ -1,17 +1,21 @@
 package StudentCRUD;
 
 
+import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
+import java.util.Comparator;
 
 /**
  * @author kimdohun
  */
-public class StudentUI extends javax.swing.JFrame {
+public class StudentUI extends javax.swing.JFrame implements ActionListener, FocusListener {
+
+    //등록,조회,수정,저장,불러오기,정렬 기능을 수행하기 위한 StudentDAO =
+    public StudentDAO dao;
 
     private javax.swing.JPanel input_P, south_P, side_P, sideIn_P1, sideIn_P2;
-    private javax.swing.JPanel create_P, search_P, update_P, save_P, load_P, numeric_P, exit_P;
+    private javax.swing.JPanel create_P, search_P, update_P, save_P, load_P, numeric_P, exit_P, delete_P;
     private javax.swing.JLabel title_L;
     private javax.swing.JSeparator title_Separator; //구분선
     private javax.swing.JLabel create_imgL, create_L;
@@ -22,6 +26,8 @@ public class StudentUI extends javax.swing.JFrame {
     private javax.swing.JLabel load_imgL, load_L;
     private javax.swing.JLabel numeric_imgL, numeric_L;
     private javax.swing.JLabel exit_imgL, exit_L;
+
+    private javax.swing.JLabel delete_imgL, delete_L;
 
     //input_P inner>
     private javax.swing.JLabel school_L;
@@ -35,6 +41,25 @@ public class StudentUI extends javax.swing.JFrame {
     //south_P inner>
     private javax.swing.JTextArea result_Ta;
     private javax.swing.JScrollPane jScrollPane1;
+
+    //알림 메세지 보여주는 Dialog
+    JOptionPane messageDial;
+
+    //등록 완료 후 그전인지 판별을 위한 boolean
+    private boolean af_Check = false;
+
+    //다이얼로그 (검색 ,수정, 정렬)
+    private search_Dialog search_dialog;
+    private update_Dialog update_Dialog;
+
+    private sort_Dialog sort_Dialog;
+
+    //저장, 불러오기 용 
+    private JFileChooser fc = new JFileChooser("/Users/kimdohun/Desktop/Spring/spring/JavaFinal/javaFinal/src/StudentCRUD");
+
+
+    // -------제작자-------
+    private javax.swing.JLabel makeMe;
 
 
     public StudentUI() {
@@ -77,6 +102,9 @@ public class StudentUI extends javax.swing.JFrame {
         exit_P = new javax.swing.JPanel();
         exit_imgL = new javax.swing.JLabel();
         exit_L = new javax.swing.JLabel();
+        delete_P = new javax.swing.JPanel();
+        delete_imgL = new javax.swing.JLabel();
+        delete_L = new javax.swing.JLabel();
         school_L = new javax.swing.JLabel();
         user_id_L = new javax.swing.JLabel();
         user_id_TF = new javax.swing.JTextField();
@@ -87,7 +115,11 @@ public class StudentUI extends javax.swing.JFrame {
         create_B = new javax.swing.JButton();
         result_Ta = new javax.swing.JTextArea();
         jScrollPane1 = new javax.swing.JScrollPane();
-
+        dao = new StudentDAO();
+        messageDial = new JOptionPane();
+        makeMe = new javax.swing.JLabel();
+        search_dialog = new search_Dialog();
+        sort_Dialog = new sort_Dialog();
 
         //side_Panel
         javax.swing.GroupLayout side_PLayout = new javax.swing.GroupLayout(side_P);
@@ -138,6 +170,10 @@ public class StudentUI extends javax.swing.JFrame {
         // side IN 2 Page start --------
         //sideIn_P2
         sideIn_P2.setBackground(new java.awt.Color(54, 34, 89));
+
+        makeMe.setForeground(new java.awt.Color(255, 255, 255));
+        makeMe.setText("@Created by KimDohun.");
+
         javax.swing.GroupLayout sideIn_P2Layout = new javax.swing.GroupLayout(sideIn_P2);
         sideIn_P2.setLayout(sideIn_P2Layout);
         sideIn_P2Layout.setHorizontalGroup(
@@ -145,10 +181,12 @@ public class StudentUI extends javax.swing.JFrame {
                         .addComponent(create_P, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(search_P, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(update_P, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(delete_P, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(save_P, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(load_P, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(numeric_P, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(exit_P, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(makeMe, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         sideIn_P2Layout.setVerticalGroup(
                 sideIn_P2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,6 +197,8 @@ public class StudentUI extends javax.swing.JFrame {
                                 .addGap(0, 0, 0)
                                 .addComponent(update_P, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
+                                .addComponent(delete_P, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
                                 .addComponent(save_P, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
                                 .addComponent(load_P, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -166,6 +206,8 @@ public class StudentUI extends javax.swing.JFrame {
                                 .addComponent(numeric_P, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
                                 .addComponent(exit_P, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(makeMe, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
                                 .addGap(0, 339, Short.MAX_VALUE))
         );
@@ -180,6 +222,7 @@ public class StudentUI extends javax.swing.JFrame {
             public void mouseExited(java.awt.event.MouseEvent e) {
                 create_P_mouseExited(e);
             }
+
 
         });
         create_imgL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -215,6 +258,22 @@ public class StudentUI extends javax.swing.JFrame {
         //sideIn_P2 >search_P
         search_P.setBackground(new java.awt.Color(54, 34, 89));
 
+        search_P.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+
+                search_P_mouseEntered(e);
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                search_P_mouseExited(e);
+            }
+
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                search_PMouseClicked(e);
+            }
+
+        });
+
         search_imgL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         search_imgL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/StudentCRUD/images/search.png"))); // NOI18N
 
@@ -245,6 +304,23 @@ public class StudentUI extends javax.swing.JFrame {
         );
         //sideIn_P2 > update_P
         update_P.setBackground(new java.awt.Color(54, 34, 89));
+
+        update_P.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+
+                update_P_mouseEntered(e);
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                update_P_mouseExited(e);
+            }
+
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                update_PMouseClicked(e);
+            }
+
+        });
+
         update_imgL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         update_imgL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/StudentCRUD/images/edit.png"))); // NOI18N
 
@@ -274,8 +350,78 @@ public class StudentUI extends javax.swing.JFrame {
                                 .addGap(0, 0, 0))
         );
 
+
+        //sideIn_P2 > delete_P
+        delete_P.setBackground(new java.awt.Color(54, 34, 89));
+        delete_P.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+
+                delete_P_mouseEntered(e);
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent e) {
+
+                delete_P_mouseExited(e);
+            }
+
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                delete_PMouseClicked(e);
+            }
+
+
+        });
+        delete_imgL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        delete_imgL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/StudentCRUD/images/delete.png"))); // NOI18N
+
+        delete_L.setFont(new java.awt.Font("Helvetica Neue", 0, 36)); // NOI18N
+        delete_L.setForeground(new java.awt.Color(255, 255, 255));
+        delete_L.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        delete_L.setText("제거");
+
+        javax.swing.GroupLayout delete_PLayout = new javax.swing.GroupLayout(delete_P);
+        delete_P.setLayout(delete_PLayout);
+        delete_PLayout.setHorizontalGroup(
+                delete_PLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(delete_PLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(delete_imgL, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(delete_L, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+                                .addGap(0, 0, 0))
+        );
+        delete_PLayout.setVerticalGroup(
+                delete_PLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, delete_PLayout.createSequentialGroup()
+                                .addGap(0, 0, 0)
+                                .addGroup(delete_PLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(delete_L, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(delete_imgL, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE))
+                                .addGap(0, 0, 0))
+        );
+
+
         //sideIn_P2 > save_P
         save_P.setBackground(new java.awt.Color(54, 34, 89));
+
+        save_P.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+
+                save_P_mouseEntered(e);
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent e) {
+
+                save_P_mouseExited(e);
+            }
+
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                save_PMouseClicked(e);
+            }
+
+
+        });
+
+
         save_imgL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         save_imgL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/StudentCRUD/images/save.png"))); // NOI18N
 
@@ -306,6 +452,25 @@ public class StudentUI extends javax.swing.JFrame {
         );
         //sideIn_P2 > load_P
         load_P.setBackground(new java.awt.Color(54, 34, 89));
+
+        load_P.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+
+                load_P_mouseEntered(e);
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent e) {
+
+                load_P_mouseExited(e);
+            }
+
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                load_PMouseClicked(e);
+            }
+
+
+        });
+
         load_imgL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         load_imgL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/StudentCRUD/images/download.png"))); // NOI18N
 
@@ -337,6 +502,24 @@ public class StudentUI extends javax.swing.JFrame {
 
         //sideIn_P2 > numeric_P
         numeric_P.setBackground(new java.awt.Color(54, 34, 89));
+
+        numeric_P.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+
+                numeric_P_mouseEntered(e);
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent e) {
+
+                numeric_P_mouseExited(e);
+            }
+
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                numeric_PMouseClicked(e);
+            }
+
+        });
+
         numeric_imgL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         numeric_imgL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/StudentCRUD/images/numeric.png"))); // NOI18N
 
@@ -377,6 +560,10 @@ public class StudentUI extends javax.swing.JFrame {
             public void mouseExited(java.awt.event.MouseEvent e) {
 
                 exit_P_mouseExited(e);
+            }
+
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                exit_PMouseClicked(e);
             }
 
         });
@@ -498,7 +685,7 @@ public class StudentUI extends javax.swing.JFrame {
         );
 
 
-
+        //-------------------south_Panel start---------
         //south_Panel
         south_P.setBackground(new java.awt.Color(204, 204, 255));
 
@@ -550,12 +737,108 @@ public class StudentUI extends javax.swing.JFrame {
                                 .addGap(0, 0, 0))
         );
 
+        //등록 처리가 되기전까지 등록 or 종료 버튼만 사용 가능.
+//        search_P.setEnabled(false);
+//        update_P.setEnabled(false);
+//        save_P.setEnabled(false);
+
+        //등록시 아이디 입력전까지 이름과 성적 text 입력 불가
+        name_TF.setEnabled(false);
+        score_TF.setEnabled(false);
+
+        //입력 폼에서 전부 입력 받기 전까지는 등록 버튼 비활성화
+        create_B.setEnabled(false);
+
+
         pack();
     }// </editor-fold>
 
     private void eventHandler() {
+        //등록 입력시 빈칸 입력시 오류메시지 출력을 위한 method
+        user_id_TF.addFocusListener(this);
+        name_TF.addFocusListener(this);
+        score_TF.addFocusListener(this);
+
+
+        create_B.addActionListener(this);
     }
 
+
+    //버튼 별 event 재정의 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals("등록하기")) {
+            if (dao.create(user_id_TF.getText(), name_TF.getText(), Integer.parseInt(score_TF.getText()))) {
+                JOptionPane.showMessageDialog(null, "정상적으로 등록되었습니다.");
+            } else {
+                JOptionPane.showMessageDialog(null, "같은 아이디가 존재합니다.", "에러 발생", JOptionPane.ERROR_MESSAGE);
+
+            }
+            user_id_TF.setText("");
+            name_TF.setText("");
+            score_TF.setText("");
+            af_Check = true;
+
+
+        }
+    }
+
+    @Override
+    public void focusGained(FocusEvent e) {
+        if (e.getSource().equals(user_id_TF))
+            result_Ta.setText("""
+                    ID(학번)를 입력해주세요.학번은 7자리 입니다.
+                     Tip.입력후 포커스 이동을 위해 조회창을 클릭해주세요!!!
+                    """);
+        else if (e.getSource().equals(name_TF))
+            result_Ta.setText("이름을 입력해주세요       Tip.입력후 포커스 이동을 위해 조회창을 클릭해주세요!!!" + '\n');
+        else if (e.getSource().equals(score_TF))
+            result_Ta.setText("성적을 입력해주세요       Tip.입력후 포커스 이동을 위해 조회창을 클릭해주세요!!!" + '\n');
+
+    }
+
+
+    @Override
+    public void focusLost(FocusEvent e) {
+        if (e.getSource().equals(user_id_TF)) {
+            if (user_id_TF.getText().equals(""))
+                JOptionPane.showMessageDialog(null, "ID(학번)를 입력해주세요", "에러 발생", JOptionPane.ERROR_MESSAGE);
+            else if (user_id_TF.getText().length() != 7) {
+                JOptionPane.showMessageDialog(null, "ID(학번)는 7자리 입니다. ", "에러 발생", JOptionPane.ERROR_MESSAGE);
+            } else if (dao.Search(user_id_TF.getText())) {
+                JOptionPane.showMessageDialog(null, "이미 ID(학번)는 존재합니다. ", "에러 발생", JOptionPane.ERROR_MESSAGE);
+            } else
+                name_TF.setEnabled(true);
+        } else if (e.getSource().equals(name_TF)) {
+            if (name_TF.getText().equals(""))
+                JOptionPane.showMessageDialog(null, "이름을 입력해주세요", "에러 발생", JOptionPane.ERROR_MESSAGE);
+            else
+                score_TF.setEnabled(true);
+        } else if (e.getSource().equals(score_TF)) {
+            if (score_TF.getText().equals(""))
+                JOptionPane.showMessageDialog(null, "성적을 입력해주세요", "에러 발생", JOptionPane.ERROR_MESSAGE);
+            else if (!((Integer.parseInt(score_TF.getText()) <= 100) && (Integer.parseInt(score_TF.getText()) >= 1))) {
+                JOptionPane.showMessageDialog(null, "1~100사이 숫자만 입력하세요", "에러 발생", JOptionPane.ERROR_MESSAGE);
+            } else {
+                create_B.setEnabled(true);
+                search_P.setEnabled(true);
+            }
+        } else if (e.getSource().equals(create_B)) {
+            if (user_id_TF.getText().equals("") && name_TF.getText().equals("") && score_TF.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "입력폼에 빈칸이 존재합니다. 모두 작성 후 눌러 주세요!!!", "에러 발생", JOptionPane.ERROR_MESSAGE);
+                create_B.setEnabled(false);
+            } else {
+                create_B.setEnabled(true);
+            }
+
+        }
+
+    }
+
+
+    //마우스 영역내에 들어올시 Panel 색 변경 처리 영역 start -------
+
+    //등록 패널
     private void create_P_mouseEntered(java.awt.event.MouseEvent e) {
         create_P.setBackground(new java.awt.Color(153, 153, 255));
     }
@@ -564,6 +847,7 @@ public class StudentUI extends javax.swing.JFrame {
         create_P.setBackground(new java.awt.Color(54, 34, 89));
     }
 
+    //종료 패널
     private void exit_P_mouseEntered(java.awt.event.MouseEvent e) {
         exit_P.setBackground(new java.awt.Color(153, 153, 255));
     }
@@ -572,10 +856,161 @@ public class StudentUI extends javax.swing.JFrame {
         exit_P.setBackground(new java.awt.Color(54, 34, 89));
     }
 
+    //조회 패널
+    private void search_P_mouseEntered(java.awt.event.MouseEvent e) {
+        if (af_Check) {
+            search_P.setBackground(new java.awt.Color(153, 153, 255));
+        } else
+            search_P.setBackground(new java.awt.Color(54, 34, 89));
+    }
+
+    private void search_P_mouseExited(java.awt.event.MouseEvent e) {
+        search_P.setBackground(new java.awt.Color(54, 34, 89));
+    }
+
+    //수정 패널
+
+
+    private void update_P_mouseEntered(java.awt.event.MouseEvent e) {
+        if (af_Check) {
+            update_P.setBackground(new java.awt.Color(153, 153, 255));
+        } else
+            update_P.setBackground(new java.awt.Color(54, 34, 89));
+    }
+
+    private void update_P_mouseExited(java.awt.event.MouseEvent e) {
+        update_P.setBackground(new java.awt.Color(54, 34, 89));
+    }
+
+    // 제거 패널
+    private void delete_P_mouseEntered(java.awt.event.MouseEvent e) {
+        if (af_Check) {
+            delete_P.setBackground(new java.awt.Color(153, 153, 255));
+        } else
+            delete_P.setBackground(new java.awt.Color(54, 34, 89));
+    }
+
+    private void delete_P_mouseExited(java.awt.event.MouseEvent e) {
+        delete_P.setBackground(new java.awt.Color(54, 34, 89));
+    }
+
+    //저장 패널
+    private void save_P_mouseEntered(java.awt.event.MouseEvent event) {
+        if (af_Check) {
+            save_P.setBackground(new java.awt.Color(153, 153, 255));
+        } else
+            save_P.setBackground(new java.awt.Color(54, 34, 89));
+    }
+
+    private void save_P_mouseExited(java.awt.event.MouseEvent e) {
+        save_P.setBackground(new java.awt.Color(54, 34, 89));
+    }
+
+    //불러오기 패널
+    private void load_P_mouseEntered(java.awt.event.MouseEvent event) {
+        if (af_Check) {
+            load_P.setBackground(new java.awt.Color(153, 153, 255));
+        } else
+            load_P.setBackground(new java.awt.Color(54, 34, 89));
+    }
+    private void load_P_mouseExited(java.awt.event.MouseEvent e) {
+        load_P.setBackground(new java.awt.Color(54, 34, 89));
+    }
+
+    // 정렬 패널
+    private void numeric_P_mouseEntered(java.awt.event.MouseEvent e) {
+        if (af_Check) {
+            numeric_P.setBackground(new java.awt.Color(153, 153, 255));
+        } else
+            numeric_P.setBackground(new java.awt.Color(54, 34, 89));
+    }
+    private void numeric_P_mouseExited(java.awt.event.MouseEvent e) {
+        numeric_P.setBackground(new java.awt.Color(54, 34, 89));
+    }
+
+
+
+    //----------------Panel 색 변경 영역 end-------------------
+
+
+    // ------------panel 클릭 event start ------------------
+
+    //조회 클릭시
+    private void search_PMouseClicked(java.awt.event.MouseEvent e) {
+        if (af_Check) {
+            result_Ta.setText(dao.read());
+        }
+    }
+
+    //종료 클릭시
+    private void exit_PMouseClicked(java.awt.event.MouseEvent e) {
+        System.exit(0);
+    }
+
+    //수정 클릭시
+    private void update_PMouseClicked(java.awt.event.MouseEvent e) {
+        if (af_Check) {
+            //아이디 검사 다이얼로그 setVisible(true)
+            search_dialog.setVisible(true);
+
+        }
+    }
+
+    //제거 클릭시
+    private void delete_PMouseClicked(java.awt.event.MouseEvent e) {
+        if (af_Check) {
+            search_dialog.setVisible(true);
+        }
+    }
+
+    //저장 클릭시
+    private void save_PMouseClicked(java.awt.event.MouseEvent e) {
+        if (af_Check) {
+            int sv = fc.showSaveDialog(this);
+            if (sv == 0) {
+                String filesavePath = fc.getSelectedFile().getAbsolutePath();
+                if (dao.save(filesavePath)) {
+                    JOptionPane.showMessageDialog(null, "정상적으로 저장되었습니다.");
+                } else {
+                    JOptionPane.showMessageDialog(null, "저장 오류 발생", "에러 발생", JOptionPane.ERROR_MESSAGE);
+                }
+
+
+            }
+        }
+    }
+
+    //불러오기 클릭시
+    private void load_PMouseClicked(java.awt.event.MouseEvent e) {
+        if (af_Check) {
+            int lv = fc.showOpenDialog(this);
+            if (lv == 0) {
+                String fileloadPath = fc.getSelectedFile().getAbsolutePath();
+                if (dao.load(fileloadPath)) {
+                    result_Ta.setText(dao.read());
+                    JOptionPane.showMessageDialog(null, "정상적으로 불러왔습니다.");
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "불러오기 오류 발생", "에러 발생", JOptionPane.ERROR_MESSAGE); 
+                }
+            }
+        }
+
+    }
+
+    //정렬하기 클릭 시
+    private void numeric_PMouseClicked(java.awt.event.MouseEvent e) {
+        if (af_Check) {
+            sort_Dialog.setVisible(true);
+        }
+
+    }
+
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -602,6 +1037,394 @@ public class StudentUI extends javax.swing.JFrame {
                 new StudentUI().setVisible(true);
             }
         });
+    }
+
+    //search_Dialog
+    class search_Dialog extends javax.swing.JDialog {
+
+        private javax.swing.JLabel id_L;
+        private javax.swing.JTextField id_TF;
+        private javax.swing.JLabel img_L;
+        private javax.swing.JButton update_btn;
+        private javax.swing.JButton search_btn;
+        private javax.swing.JButton delete_btn;
+        private javax.swing.JPanel jPanel1;
+        private javax.swing.JScrollPane jScrollPane1;
+        private javax.swing.JScrollPane jScrollPane2;
+        private javax.swing.JTextArea jTextArea1;
+        private javax.swing.JTextArea text_TF;
+
+
+        public search_Dialog() {
+
+
+            setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+            setTitle("아이디 검색 다이얼로그");
+            formDesign();
+            eventHandler();
+
+        }
+
+
+        @SuppressWarnings("unchecked")
+        // <editor-fold defaultstate="collapsed" desc="Generated Code">
+        private void formDesign() {
+
+            jScrollPane1 = new javax.swing.JScrollPane();
+            jTextArea1 = new javax.swing.JTextArea();
+            jPanel1 = new javax.swing.JPanel();
+            img_L = new javax.swing.JLabel();
+            id_L = new javax.swing.JLabel();
+            id_TF = new javax.swing.JTextField();
+            update_btn = new javax.swing.JButton();
+            search_btn = new javax.swing.JButton();
+            jScrollPane2 = new javax.swing.JScrollPane();
+            text_TF = new javax.swing.JTextArea();
+            delete_btn = new javax.swing.JButton();
+
+            jTextArea1.setColumns(20);
+            jTextArea1.setRows(5);
+            jScrollPane1.setViewportView(jTextArea1);
+
+            setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+            jPanel1.setBackground(new java.awt.Color(110, 203, 244));
+
+            img_L.setIcon(new javax.swing.ImageIcon(getClass().getResource("/StudentCRUD/images/search_log.png"))); // NOI18N
+
+            id_L.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+            id_L.setForeground(new java.awt.Color(255, 255, 255));
+            id_L.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            id_L.setText("UserId");
+
+            id_TF.setBackground(new java.awt.Color(110, 203, 244));
+            id_TF.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 2, true));
+
+            update_btn.setBackground(new java.awt.Color(41, 131, 222));
+            update_btn.setText("수정하기");
+
+            search_btn.setBackground(new java.awt.Color(41, 131, 222));
+            search_btn.setText("검색하기");
+
+            text_TF.setBackground(new java.awt.Color(110, 203, 244));
+            text_TF.setColumns(15);
+            text_TF.setForeground(new java.awt.Color(255, 255, 255));
+            text_TF.setRows(1);
+            text_TF.setBorder(null);
+            text_TF.setDisabledTextColor(new java.awt.Color(255, 255, 255));
+            jScrollPane2.setViewportView(text_TF);
+
+            delete_btn.setBackground(new java.awt.Color(41, 131, 222));
+            delete_btn.setText("삭제하기");
+
+            javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+            jPanel1.setLayout(jPanel1Layout);
+            jPanel1Layout.setHorizontalGroup(
+                    jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                    .addGap(24, 24, 24)
+                                                    .addComponent(search_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addGap(18, 18, 18)
+                                                    .addComponent(update_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                    .addComponent(delete_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                    .addGap(180, 180, 180)
+                                                    .addComponent(img_L))
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                    .addGap(115, 115, 115)
+                                                    .addComponent(id_L, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                    .addGap(138, 138, 138)
+                                                    .addComponent(id_TF, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                    .addGap(123, 123, 123)
+                                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addContainerGap(21, Short.MAX_VALUE))
+            );
+            jPanel1Layout.setVerticalGroup(
+                    jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGap(23, 23, 23)
+                                    .addComponent(img_L, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(id_L)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(id_TF, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(search_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(update_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(delete_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(26, 26, 26))
+            );
+
+            javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+            getContentPane().setLayout(layout);
+            layout.setHorizontalGroup(
+                    layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            );
+            layout.setVerticalGroup(
+                    layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            );
+
+
+            //검색결과가 넘어오기 전까지 false
+            update_btn.setEnabled(false);
+            delete_btn.setEnabled(false);
+
+            pack();
+        }// </editor-fold>
+
+        private void eventHandler() {
+            search_btn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    boolean result = dao.Search(id_TF.getText());
+                    if (result == true) {
+                        update_btn.setEnabled(true);
+                        delete_btn.setEnabled(true);
+                        text_TF.setText("검색결과 :검색하신 ID가" + text_TF.getText() + "가 존재.");
+                    } else
+                        text_TF.setText("검색결과 :검색하신 ID가" + text_TF.getText() + "가 존재X.");
+                }
+            });
+            update_btn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int id_i = dao.update(id_TF.getText());
+                    Student st1 = dao.Search_i(id_i);
+                    update_Dialog = new update_Dialog(st1.getId(), st1.getName(), st1.getScore());
+                    update_Dialog.setVisible(true);
+                    search_dialog.setVisible(false);
+
+
+                }
+            });
+            delete_btn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (dao.delete(id_TF.getText())) {
+                        JOptionPane.showMessageDialog(null, "정상적으로 삭제되었습니다.");
+                        search_dialog.setVisible(false);
+                    } else
+                        JOptionPane.showMessageDialog(null, "삭제 오류 발생", "에러 발생", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+
+        }
+    }
+
+    //update_Dialog
+    class update_Dialog extends javax.swing.JDialog {
+
+        private static final long serialVersionUID = 8309207734155538748L;
+        private JLabel Lid, Lname, Lscore, LTid;
+        private JTextField Tname, Tscore;
+        private JButton cancel, upBtn;
+        private JPanel up1, up2, up3;
+
+
+        update_Dialog(String id_i, String name_i, int socre_i) {
+            this.setTitle("수정하기");
+            this.setSize(450, 300);
+            this.formDesign(id_i, name_i, socre_i);
+            this.eventHandler();
+            this.setVisible(true);
+            this.setBackground(new java.awt.Color(110, 203, 244));
+
+        }
+
+        public void formDesign(String id_i, String name_i, int socre_i) {
+            Lid = new JLabel("id:");
+            Lid.setBackground(new java.awt.Color(110, 203, 244));
+            Lname = new JLabel("name:");
+            Lname.setBackground(new java.awt.Color(110, 203, 244));
+            Lscore = new JLabel("score");
+            Lscore.setBackground(new java.awt.Color(110, 203, 244));
+            LTid = new JLabel(id_i);
+            LTid.setBackground(new java.awt.Color(110, 203, 244));
+            Tname = new JTextField(name_i, 10);
+            Tname.setBackground(new java.awt.Color(110, 203, 244));
+            Tscore = new JTextField(String.valueOf(socre_i), 10);
+            Tscore.setBackground(new java.awt.Color(110, 203, 244));
+            cancel = new JButton("취소");
+            cancel.setBackground(new java.awt.Color(41, 131, 222));
+            upBtn = new JButton("확인(수정)");
+            upBtn.setBackground(new java.awt.Color(41, 131, 222));
+            up1 = new JPanel();
+            up1.setBackground(new java.awt.Color(110, 203, 244));
+            up2 = new JPanel();
+            up2.setBackground(new java.awt.Color(110, 203, 244));
+            up3 = new JPanel();
+            up3.setBackground(new java.awt.Color(110, 203, 244));
+
+            this.add(up1, BorderLayout.CENTER);
+            up1.setLayout(new GridLayout(2, 1));
+            up1.add(up2);
+            up2.setLayout(new GridLayout(3, 2));
+            up2.add(Lid);
+            up2.add(LTid);
+            up2.add(Lname);
+            up2.add(Tname);
+            up2.add(Lscore);
+            up2.add(Tscore);
+            up1.add(up3);
+            up3.setLayout(new GridLayout(1, 2));
+            up3.add(cancel);
+            up3.add(upBtn);
+
+
+        }
+
+        public void eventHandler() {
+            cancel.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    update_Dialog.setVisible(false);
+                }
+            });
+
+            upBtn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int id_i = dao.update(LTid.getText());
+                    String id = LTid.getText();
+                    String name = Tname.getText();
+                    int score = Integer.parseInt(Tscore.getText());
+                    dao.update_2(id_i, id, name, score);
+                    update_Dialog.setVisible(false);
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+
+
+                }
+            });
+
+
+        }
+
+    }
+
+    //sort_Dialog
+    class sort_Dialog extends javax.swing.JDialog {
+        private javax.swing.JButton Asc_btn;
+        private javax.swing.JButton Desc_btn;
+        private javax.swing.JButton Rank_btn;
+        private javax.swing.JPanel jPanel1;
+
+
+        public sort_Dialog() {
+            setTitle("정렬다이얼로그");
+            setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+            formDesign();
+            sort_eventHandler();
+        }
+
+
+        @SuppressWarnings("unchecked")
+        // <editor-fold defaultstate="collapsed" desc="Generated Code">
+        private void formDesign() {
+
+            jPanel1 = new javax.swing.JPanel();
+            Asc_btn = new javax.swing.JButton();
+            Desc_btn = new javax.swing.JButton();
+            Rank_btn = new javax.swing.JButton();
+
+
+
+            jPanel1.setBackground(new java.awt.Color(153, 51, 255));
+
+            Asc_btn.setBackground(new java.awt.Color(153, 51, 255));
+            Asc_btn.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+            Asc_btn.setForeground(new java.awt.Color(255, 255, 255));
+            Asc_btn.setText("오름차순");
+
+            Desc_btn.setBackground(new java.awt.Color(102, 102, 255));
+            Desc_btn.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+            Desc_btn.setForeground(new java.awt.Color(255, 255, 255));
+            Desc_btn.setText("내림차순");
+
+            Rank_btn.setBackground(new java.awt.Color(255, 102, 153));
+            Rank_btn.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+            Rank_btn.setForeground(new java.awt.Color(255, 255, 255));
+            Rank_btn.setText("랭킹순(성적)");
+
+            javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+            jPanel1.setLayout(jPanel1Layout);
+            jPanel1Layout.setHorizontalGroup(
+                    jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Asc_btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(Desc_btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(Rank_btn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 545, Short.MAX_VALUE)
+            );
+            jPanel1Layout.setVerticalGroup(
+                    jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(Asc_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(0, 0, 0)
+                                    .addComponent(Desc_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(0, 0, 0)
+                                    .addComponent(Rank_btn, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE))
+            );
+
+            javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+            getContentPane().setLayout(layout);
+            layout.setHorizontalGroup(
+                    layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            );
+            layout.setVerticalGroup(
+                    layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            );
+
+            pack();
+        }// </editor-fold>                                                                ㅋ
+        private void sort_eventHandler(){
+            Asc_btn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                }
+            });
+            Desc_btn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                }
+            });
+            Rank_btn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    
+                }
+            });
+        }
+
+        /**
+         * @param args the command line arguments
+         */
+        
+
+
+    }
+
+    class Asc_compare implements Comparator<Student>{
+
+        @Override
+        public int compare(Student stu1, Student stu2) {
+            return stu1.getId().compareTo(stu2.getId());
+        }
     }
 
 

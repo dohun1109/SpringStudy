@@ -254,6 +254,9 @@ public class StudentGUIUI extends JFrame implements ActionListener ,FocusListene
                 }
             });
 
+
+
+
         }
     }
 
@@ -271,6 +274,7 @@ public class StudentGUIUI extends JFrame implements ActionListener ,FocusListene
             this.formDesign(id_i, name_i,socre_i);
             this.eventHandler();
             this.setVisible(true);
+            this.setBackground(new java.awt.Color(110, 203, 244));
 
         }
         public void formDesign(String id_i,String name_i, int socre_i){
