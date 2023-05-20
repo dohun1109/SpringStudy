@@ -1,14 +1,20 @@
 package StudentCRUD;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 public class StudentDAO {
 
     private ArrayList<Student> al;
 
+
+    public ArrayList<Student> getAl() {
+        return al;
+    }
+
+    public void setAl(ArrayList<Student> al) {
+        this.al = al;
+    }
 
     public StudentDAO() {
         al = new ArrayList<Student>();
@@ -103,7 +109,7 @@ public class StudentDAO {
 
 
     }
-
+    // 저장
     public boolean save(String filePath) {
         try {
             String filepath = filePath;
@@ -131,7 +137,7 @@ public class StudentDAO {
             return false;
         }
     }
-
+    //불러오기 
     public boolean load(String filePath) {
         try {
             String savefilename = filePath;
@@ -142,18 +148,19 @@ public class StudentDAO {
             String text;
             while((text = br.readLine())!= null){
                 String text1 = text.replace("[","");
-                System.out.println(text1);
+//                System.out.println(text1);        <테스트 코드>
                 String text2 = text1.replace("]","");
-                System.out.println(text2);
+//                System.out.println(text2);
                 String text3 = text2.replace(" ","");
                 String[] values = text3.split(",");
-                System.out.println(Arrays.toString(values));
+//                System.out.println(Arrays.toString(values));
+                al.clear();
 
                 for (int i = 0; i<values.length; i++){
                     String[] info = values[i].split(":");
-                    System.out.println(Arrays.toString(info));
+//                    System.out.println(Arrays.toString(info));
                     Student stu = new Student(info[0],info[1],Integer.parseInt(info[2]));
-                    al.set(i,stu);
+                    al.add(i,stu);
                 }
             }
 
@@ -174,10 +181,97 @@ public class StudentDAO {
 
 
     }
+    public boolean strContain(String id){
+        boolean check = false;
+       for(char c : id.toCharArray()){
+           if(!Character.isDigit(c)){
+               check = true;
+           }
+       }
+       return check;
+    }
+    //id 오름차순 정렬
+    public boolean sortAsc_id(){
+        Collections.sort(al,new Asc_compare());
+        return true;
+    }
+    //id 내림차순 정렬
+    public boolean sortDesc_id(){
+        Collections.sort(al,new Desc_compare());
+        return true;
+    }
+    //score 내림차순 정렬
+    public boolean sortAsc_score(){
+        Collections.sort(al,new Asc_Rank_compare());
+        return true;
+    }
+    public boolean sortDesc_score(){
+        Collections.sort(al,new Desc_Rank_compare());
+        return true;
+    }
+
+    public boolean sortAsc_name(){
+        Collections.sort(al,new Asc_name_compare());
+        return true;
+    }
+
+    public boolean sortDesc_name(){
+        Collections.sort(al,new Desc_name_compare());
+        return true;
+    }
 
     // 이전에 검사 모두 마친 후 수정(실제 수정되는 코드)
     public void update_2(int id_i, String id,String name,int score) {
           al.set(id_i,new Student(id,name,score));
 
     }
+
+
+    //--------정렬 부분------
+    //UserId(학번) 오름차순 정렬
+    class Asc_compare implements Comparator<Student> {
+
+        @Override
+        public int compare(Student stu1, Student stu2) {
+            return Integer.compare(Integer.parseInt(stu1.getId()),Integer.parseInt(stu2.getId()));
+        }
+    }
+    //UserId(학번) 내림차순 정렬
+    class Desc_compare implements Comparator<Student>{
+
+        @Override
+        public int compare(Student stu1, Student stu2) {
+            return Integer.compare(Integer.parseInt(stu2.getId()),Integer.parseInt(stu1.getId()));
+        }
+    }
+
+    class Asc_Rank_compare implements Comparator<Student> {
+        @Override
+        public int compare(Student o1, Student o2) {
+            return Integer.compare(o1.getScore(),o2.getScore());
+        }
+    }
+    class Desc_Rank_compare implements Comparator<Student> {
+        @Override
+        public int compare(Student o1, Student o2) {
+            return Integer.compare(o2.getScore(),o1.getScore());
+        }
+    }
+    class Asc_name_compare implements Comparator<Student>{
+
+        @Override
+        public int compare(Student o1, Student o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    }
+
+    class Desc_name_compare implements Comparator<Student>{
+
+        @Override
+        public int compare(Student o1, Student o2) {
+            return o2.getName().compareTo(o1.getName());
+        }
+    }
+
+
 }

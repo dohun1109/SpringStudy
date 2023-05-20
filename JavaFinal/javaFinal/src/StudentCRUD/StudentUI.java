@@ -4,7 +4,6 @@ package StudentCRUD;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Comparator;
 
 /**
  * @author kimdohun
@@ -15,7 +14,7 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
     public StudentDAO dao;
 
     private javax.swing.JPanel input_P, south_P, side_P, sideIn_P1, sideIn_P2;
-    private javax.swing.JPanel create_P, search_P, update_P, save_P, load_P, numeric_P, exit_P, delete_P;
+    private javax.swing.JPanel create_P, search_P, update_P, save_P, load_P, numeric_P, exit_P, delete_P, change_P;
     private javax.swing.JLabel title_L;
     private javax.swing.JSeparator title_Separator; //구분선
     private javax.swing.JLabel create_imgL, create_L;
@@ -25,6 +24,7 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
 
     private javax.swing.JLabel load_imgL, load_L;
     private javax.swing.JLabel numeric_imgL, numeric_L;
+    private javax.swing.JLabel change_imgL, change_L;
     private javax.swing.JLabel exit_imgL, exit_L;
 
     private javax.swing.JLabel delete_imgL, delete_L;
@@ -44,15 +44,21 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
 
     //알림 메세지 보여주는 Dialog
     JOptionPane messageDial;
+    JOptionPane messageDial2;
 
     //등록 완료 후 그전인지 판별을 위한 boolean
     private boolean af_Check = false;
 
-    //다이얼로그 (검색 ,수정, 정렬)
+    //다이얼로그 (검색 ,수정, 정렬, 테마 변경)
     private search_Dialog search_dialog;
     private update_Dialog update_Dialog;
 
     private sort_Dialog sort_Dialog;
+
+    private changeDialog changeDialog;
+
+    //테마 변경시 변경된 테마에 따라 Label 변하는 색
+    int nowColor = 0;
 
     //저장, 불러오기 용 
     private JFileChooser fc = new JFileChooser("/Users/kimdohun/Desktop/Spring/spring/JavaFinal/javaFinal/src/StudentCRUD");
@@ -99,6 +105,9 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
         numeric_P = new javax.swing.JPanel();
         numeric_imgL = new javax.swing.JLabel();
         numeric_L = new javax.swing.JLabel();
+        change_P = new javax.swing.JPanel();
+        change_imgL = new javax.swing.JLabel();
+        change_L = new javax.swing.JLabel();
         exit_P = new javax.swing.JPanel();
         exit_imgL = new javax.swing.JLabel();
         exit_L = new javax.swing.JLabel();
@@ -120,6 +129,7 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
         makeMe = new javax.swing.JLabel();
         search_dialog = new search_Dialog();
         sort_Dialog = new sort_Dialog();
+        changeDialog = new changeDialog();
 
         //side_Panel
         javax.swing.GroupLayout side_PLayout = new javax.swing.GroupLayout(side_P);
@@ -185,6 +195,7 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
                         .addComponent(save_P, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(load_P, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(numeric_P, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(change_P, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(exit_P, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(makeMe, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
@@ -205,11 +216,13 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
                                 .addGap(0, 0, 0)
                                 .addComponent(numeric_P, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
+                                .addComponent(change_P, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
                                 .addComponent(exit_P, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
                                 .addComponent(makeMe, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, 0)
-                                .addGap(0, 339, Short.MAX_VALUE))
+                                .addGap(0, 270, Short.MAX_VALUE))
         );
 
         //sideIn_P2 > create_P
@@ -221,6 +234,10 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
 
             public void mouseExited(java.awt.event.MouseEvent e) {
                 create_P_mouseExited(e);
+            }
+
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                create_PMouseClicked(e);
             }
 
 
@@ -549,6 +566,57 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
                                 .addGap(0, 0, 0))
         );
 
+        //sideIn_P2 > change_P
+        change_P.setBackground(new java.awt.Color(54, 34, 89));
+
+        change_P.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+
+                change_P_mouseEntered(e);
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent e) {
+
+                change_P_mouseExited(e);
+            }
+
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                change_PMouseClicked(e);
+            }
+
+
+        });
+
+        change_imgL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        change_imgL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/StudentCRUD/images/setting.png"))); // NOI18N
+
+        change_L.setFont(new java.awt.Font("Helvetica Neue", 0, 36)); // NOI18N
+        change_L.setForeground(new java.awt.Color(255, 255, 255));
+        change_L.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        change_L.setText("테마 변경");
+
+        javax.swing.GroupLayout change_PLayout = new javax.swing.GroupLayout(change_P);
+        change_P.setLayout(change_PLayout);
+        change_PLayout.setHorizontalGroup(
+                change_PLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(change_PLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(change_imgL, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(change_L, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+                                .addGap(0, 0, 0))
+        );
+        change_PLayout.setVerticalGroup(
+                change_PLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, change_PLayout.createSequentialGroup()
+                                .addGap(0, 0, 0)
+                                .addGroup(change_PLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(change_L, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(change_imgL, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE))
+                                .addGap(0, 0, 0))
+        );
+
+
         //sideIn_P2 > exit_P
         exit_P.setBackground(new java.awt.Color(54, 34, 89));
         exit_P.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -743,6 +811,7 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
 //        save_P.setEnabled(false);
 
         //등록시 아이디 입력전까지 이름과 성적 text 입력 불가
+        user_id_TF.setEnabled(false);
         name_TF.setEnabled(false);
         score_TF.setEnabled(false);
 
@@ -770,8 +839,11 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
         if (e.getActionCommand().equals("등록하기")) {
             if (dao.create(user_id_TF.getText(), name_TF.getText(), Integer.parseInt(score_TF.getText()))) {
                 JOptionPane.showMessageDialog(null, "정상적으로 등록되었습니다.");
+                user_id_TF.setEnabled(false);
+                name_TF.setEnabled(false);
+                score_TF.setEnabled(false);
             } else {
-                JOptionPane.showMessageDialog(null, "같은 아이디가 존재합니다.", "에러 발생", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "등록 오류", "에러 발생", JOptionPane.ERROR_MESSAGE);
 
             }
             user_id_TF.setText("");
@@ -801,12 +873,18 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
     @Override
     public void focusLost(FocusEvent e) {
         if (e.getSource().equals(user_id_TF)) {
+            create_B.setEnabled(false);
             if (user_id_TF.getText().equals(""))
                 JOptionPane.showMessageDialog(null, "ID(학번)를 입력해주세요", "에러 발생", JOptionPane.ERROR_MESSAGE);
             else if (user_id_TF.getText().length() != 7) {
                 JOptionPane.showMessageDialog(null, "ID(학번)는 7자리 입니다. ", "에러 발생", JOptionPane.ERROR_MESSAGE);
+                user_id_TF.setText("");
             } else if (dao.Search(user_id_TF.getText())) {
                 JOptionPane.showMessageDialog(null, "이미 ID(학번)는 존재합니다. ", "에러 발생", JOptionPane.ERROR_MESSAGE);
+                user_id_TF.setText("");
+            } else if (dao.strContain(user_id_TF.getText())) {
+                JOptionPane.showMessageDialog(null, "문자가 포함되어있습니다.", "에러 발생", JOptionPane.ERROR_MESSAGE);
+                user_id_TF.setText("");
             } else
                 name_TF.setEnabled(true);
         } else if (e.getSource().equals(name_TF)) {
@@ -819,6 +897,7 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
                 JOptionPane.showMessageDialog(null, "성적을 입력해주세요", "에러 발생", JOptionPane.ERROR_MESSAGE);
             else if (!((Integer.parseInt(score_TF.getText()) <= 100) && (Integer.parseInt(score_TF.getText()) >= 1))) {
                 JOptionPane.showMessageDialog(null, "1~100사이 숫자만 입력하세요", "에러 발생", JOptionPane.ERROR_MESSAGE);
+                score_TF.setText("");
             } else {
                 create_B.setEnabled(true);
                 search_P.setEnabled(true);
@@ -840,100 +919,271 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
 
     //등록 패널
     private void create_P_mouseEntered(java.awt.event.MouseEvent e) {
-        create_P.setBackground(new java.awt.Color(153, 153, 255));
+        if (nowColor == 0) {
+            create_P.setBackground(new java.awt.Color(153, 153, 255));
+        } else if (nowColor == 1) {
+            create_P.setBackground(new java.awt.Color(0, 0, 0));
+        } else if (nowColor == 2) {
+            create_P.setBackground(new java.awt.Color(255, 102, 0));
+        }
     }
 
     private void create_P_mouseExited(java.awt.event.MouseEvent e) {
-        create_P.setBackground(new java.awt.Color(54, 34, 89));
+        if (nowColor == 0) {
+            create_P.setBackground(new java.awt.Color(54, 34, 89));
+        } else if (nowColor == 1) {
+            create_P.setBackground(new java.awt.Color(51, 51, 51));
+        } else if (nowColor == 2) {
+            create_P.setBackground(new java.awt.Color(255, 153, 51));
+        }
     }
 
     //종료 패널
     private void exit_P_mouseEntered(java.awt.event.MouseEvent e) {
-        exit_P.setBackground(new java.awt.Color(153, 153, 255));
+        if (nowColor == 0) {
+            exit_P.setBackground(new java.awt.Color(153, 153, 255));
+        } else if (nowColor == 1) {
+            exit_P.setBackground(new java.awt.Color(0, 0, 0));
+        } else if (nowColor == 2) {
+            exit_P.setBackground(new java.awt.Color(255, 102, 0));
+        }
     }
 
     private void exit_P_mouseExited(java.awt.event.MouseEvent e) {
-        exit_P.setBackground(new java.awt.Color(54, 34, 89));
+        if (nowColor == 0) {
+            exit_P.setBackground(new java.awt.Color(54, 34, 89));
+        } else if (nowColor == 1) {
+            exit_P.setBackground(new java.awt.Color(51, 51, 51));
+        } else if (nowColor == 2) {
+            exit_P.setBackground(new java.awt.Color(255, 153, 51));
+        }
     }
 
     //조회 패널
     private void search_P_mouseEntered(java.awt.event.MouseEvent e) {
-        if (af_Check) {
-            search_P.setBackground(new java.awt.Color(153, 153, 255));
-        } else
-            search_P.setBackground(new java.awt.Color(54, 34, 89));
+        if (nowColor == 0) {
+            if (af_Check) {
+                search_P.setBackground(new java.awt.Color(153, 153, 255));
+            } else
+                search_P.setBackground(new java.awt.Color(54, 34, 89));
+        } else if (nowColor == 1) {
+            if (af_Check) {
+                search_P.setBackground(new java.awt.Color(0, 0, 0));
+            } else
+                search_P.setBackground(new java.awt.Color(51, 51, 51));
+        } else if (nowColor == 2) {
+            if (af_Check) {
+                search_P.setBackground(new java.awt.Color(255, 102, 0));
+            } else
+                search_P.setBackground(new java.awt.Color(255, 153, 51));
+
+        }
     }
 
     private void search_P_mouseExited(java.awt.event.MouseEvent e) {
-        search_P.setBackground(new java.awt.Color(54, 34, 89));
+        if (nowColor == 0) {
+            search_P.setBackground(new java.awt.Color(54, 34, 89));
+        } else if (nowColor == 1) {
+            search_P.setBackground(new java.awt.Color(51, 51, 51));
+        } else if (nowColor == 2) {
+            search_P.setBackground(new java.awt.Color(255, 153, 51));
+        }
     }
 
     //수정 패널
-
-
     private void update_P_mouseEntered(java.awt.event.MouseEvent e) {
-        if (af_Check) {
-            update_P.setBackground(new java.awt.Color(153, 153, 255));
-        } else
-            update_P.setBackground(new java.awt.Color(54, 34, 89));
+        if (nowColor == 0) {
+            if (af_Check) {
+                update_P.setBackground(new java.awt.Color(153, 153, 255));
+            } else
+                update_P.setBackground(new java.awt.Color(54, 34, 89));
+        } else if (nowColor == 1) {
+            if (af_Check) {
+                update_P.setBackground(new java.awt.Color(0, 0, 0));
+            } else
+                update_P.setBackground(new java.awt.Color(51, 51, 51));
+
+        } else if (nowColor == 2) {
+            if (af_Check) {
+                update_P.setBackground(new java.awt.Color(255, 102, 0));
+            } else
+                update_P.setBackground(new java.awt.Color(255, 153, 51));
+
+
+        }
     }
 
     private void update_P_mouseExited(java.awt.event.MouseEvent e) {
-        update_P.setBackground(new java.awt.Color(54, 34, 89));
+        if (nowColor == 0) {
+            update_P.setBackground(new java.awt.Color(54, 34, 89));
+        } else if (nowColor == 1) {
+            update_P.setBackground(new java.awt.Color(51, 51, 51));
+        } else if (nowColor == 2) {
+            update_P.setBackground(new java.awt.Color(255, 153, 51));
+        }
     }
 
     // 제거 패널
     private void delete_P_mouseEntered(java.awt.event.MouseEvent e) {
-        if (af_Check) {
-            delete_P.setBackground(new java.awt.Color(153, 153, 255));
-        } else
-            delete_P.setBackground(new java.awt.Color(54, 34, 89));
+        if (nowColor == 0) {
+            if (af_Check) {
+                delete_P.setBackground(new java.awt.Color(153, 153, 255));
+            } else
+                delete_P.setBackground(new java.awt.Color(54, 34, 89));
+        } else if (nowColor == 1) {
+            if (af_Check) {
+                delete_P.setBackground(new java.awt.Color(0, 0, 0));
+            } else
+                delete_P.setBackground(new java.awt.Color(51, 51, 51));
+
+        } else if (nowColor == 2) {
+            if (af_Check) {
+                delete_P.setBackground(new java.awt.Color(255, 102, 0));
+            } else
+                delete_P.setBackground(new java.awt.Color(255, 153, 51));
+
+
+        }
     }
 
     private void delete_P_mouseExited(java.awt.event.MouseEvent e) {
-        delete_P.setBackground(new java.awt.Color(54, 34, 89));
+        if (nowColor == 0) {
+            delete_P.setBackground(new java.awt.Color(54, 34, 89));
+        } else if (nowColor == 1) {
+            delete_P.setBackground(new java.awt.Color(51, 51, 51));
+        } else if (nowColor == 2) {
+            delete_P.setBackground(new java.awt.Color(255, 153, 51));
+        }
     }
 
     //저장 패널
     private void save_P_mouseEntered(java.awt.event.MouseEvent event) {
-        if (af_Check) {
-            save_P.setBackground(new java.awt.Color(153, 153, 255));
-        } else
-            save_P.setBackground(new java.awt.Color(54, 34, 89));
+        if (nowColor == 0) {
+            if (af_Check) {
+                save_P.setBackground(new java.awt.Color(153, 153, 255));
+            } else
+                save_P.setBackground(new java.awt.Color(54, 34, 89));
+        } else if (nowColor == 1) {
+            if (af_Check) {
+                save_P.setBackground(new java.awt.Color(0, 0, 0));
+            } else
+                save_P.setBackground(new java.awt.Color(51, 51, 51));
+
+        } else if (nowColor == 2) {
+            if (af_Check) {
+                save_P.setBackground(new java.awt.Color(255, 102, 0));
+            } else
+                save_P.setBackground(new java.awt.Color(255, 153, 51));
+
+        }
     }
 
     private void save_P_mouseExited(java.awt.event.MouseEvent e) {
-        save_P.setBackground(new java.awt.Color(54, 34, 89));
+        if (nowColor == 0) {
+            save_P.setBackground(new java.awt.Color(54, 34, 89));
+        } else if (nowColor == 1) {
+            save_P.setBackground(new java.awt.Color(51, 51, 51));
+        } else if (nowColor == 2) {
+            save_P.setBackground(new java.awt.Color(255, 153, 51));
+        }
     }
 
     //불러오기 패널
     private void load_P_mouseEntered(java.awt.event.MouseEvent event) {
-        if (af_Check) {
-            load_P.setBackground(new java.awt.Color(153, 153, 255));
-        } else
-            load_P.setBackground(new java.awt.Color(54, 34, 89));
+        if (nowColor == 0) {
+            if (af_Check) {
+                load_P.setBackground(new java.awt.Color(153, 153, 255));
+            } else
+                load_P.setBackground(new java.awt.Color(54, 34, 89));
+        } else if (nowColor == 1) {
+            if (af_Check) {
+                load_P.setBackground(new java.awt.Color(0, 0, 0));
+            } else
+                load_P.setBackground(new java.awt.Color(51, 51, 51));
+
+        } else if (nowColor == 2) {
+            if (af_Check) {
+                load_P.setBackground(new java.awt.Color(255, 102, 0));
+            } else
+                load_P.setBackground(new java.awt.Color(255, 153, 51));
+
+        }
+
     }
+
     private void load_P_mouseExited(java.awt.event.MouseEvent e) {
-        load_P.setBackground(new java.awt.Color(54, 34, 89));
+        if (nowColor == 0) {
+            load_P.setBackground(new java.awt.Color(54, 34, 89));
+        } else if (nowColor == 1) {
+            load_P.setBackground(new java.awt.Color(51, 51, 51));
+        } else if (nowColor == 2) {
+            load_P.setBackground(new java.awt.Color(255, 153, 51));
+        }
     }
 
     // 정렬 패널
     private void numeric_P_mouseEntered(java.awt.event.MouseEvent e) {
-        if (af_Check) {
-            numeric_P.setBackground(new java.awt.Color(153, 153, 255));
-        } else
-            numeric_P.setBackground(new java.awt.Color(54, 34, 89));
-    }
-    private void numeric_P_mouseExited(java.awt.event.MouseEvent e) {
-        numeric_P.setBackground(new java.awt.Color(54, 34, 89));
+        if (nowColor == 0) {
+            if (af_Check) {
+                numeric_P.setBackground(new java.awt.Color(153, 153, 255));
+            } else
+                numeric_P.setBackground(new java.awt.Color(54, 34, 89));
+        } else if (nowColor == 1) {
+            if (af_Check) {
+                numeric_P.setBackground(new java.awt.Color(0, 0, 0));
+            } else
+                numeric_P.setBackground(new java.awt.Color(51, 51, 51));
+
+        } else if (nowColor == 2) {
+            if (af_Check) {
+                numeric_P.setBackground(new java.awt.Color(255, 102, 0));
+            } else
+                numeric_P.setBackground(new java.awt.Color(255, 153, 51));
+
+        }
     }
 
+    private void numeric_P_mouseExited(java.awt.event.MouseEvent e) {
+        if (nowColor == 0) {
+            numeric_P.setBackground(new java.awt.Color(54, 34, 89));
+        } else if (nowColor == 1) {
+            numeric_P.setBackground(new java.awt.Color(51, 51, 51));
+        } else if (nowColor == 2) {
+            numeric_P.setBackground(new java.awt.Color(255, 153, 51));
+        }
+    }
+
+    // 색 변경 패널
+
+    private void change_P_mouseEntered(java.awt.event.MouseEvent e) {
+        if (nowColor == 0) {
+            change_P.setBackground(new java.awt.Color(153, 153, 255));
+        } else if (nowColor == 1) {
+            change_P.setBackground(new java.awt.Color(0, 0, 0));
+        } else if (nowColor == 2) {
+            change_P.setBackground(new java.awt.Color(255, 102, 0));
+        }
+    }
+
+    private void change_P_mouseExited(java.awt.event.MouseEvent e) {
+        if (nowColor == 0) {
+            change_P.setBackground(new java.awt.Color(54, 34, 89));
+        } else if (nowColor == 1) {
+            change_P.setBackground(new java.awt.Color(51, 51, 51));
+        } else if (nowColor == 2) {
+            change_P.setBackground(new java.awt.Color(255, 153, 51));
+        }
+    }
 
 
     //----------------Panel 색 변경 영역 end-------------------
 
 
     // ------------panel 클릭 event start ------------------
+    //등록 클릭 시
+    private void create_PMouseClicked(java.awt.event.MouseEvent e) {
+        user_id_TF.setEnabled(true);
+    }
 
     //조회 클릭시
     private void search_PMouseClicked(java.awt.event.MouseEvent e) {
@@ -944,6 +1194,7 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
 
     //종료 클릭시
     private void exit_PMouseClicked(java.awt.event.MouseEvent e) {
+        JOptionPane.showMessageDialog(null, "종료 하시겠습니까?", "종료", JOptionPane.ERROR_MESSAGE);
         System.exit(0);
     }
 
@@ -987,14 +1238,14 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
             if (lv == 0) {
                 String fileloadPath = fc.getSelectedFile().getAbsolutePath();
                 if (dao.load(fileloadPath)) {
-                    result_Ta.setText(dao.read());
                     JOptionPane.showMessageDialog(null, "정상적으로 불러왔습니다.");
-                }
-                else {
-                    JOptionPane.showMessageDialog(null, "불러오기 오류 발생", "에러 발생", JOptionPane.ERROR_MESSAGE); 
+                    result_Ta.setText(dao.read());
+                } else {
+                    JOptionPane.showMessageDialog(null, "불러오기 오류 발생", "에러 발생", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
+
 
     }
 
@@ -1003,6 +1254,12 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
         if (af_Check) {
             sort_Dialog.setVisible(true);
         }
+
+    }
+
+    //테마 변경 클릭 시
+    private void change_PMouseClicked(java.awt.event.MouseEvent event) {
+        changeDialog.setVisible(true);
 
     }
 
@@ -1183,16 +1440,42 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
         }// </editor-fold>
 
         private void eventHandler() {
+            id_TF.addFocusListener(new FocusListener() {
+                @Override
+                public void focusGained(FocusEvent e) {
+
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                    if (e.getSource().equals(id_TF)) {
+                        update_btn.setEnabled(false);
+                        delete_btn.setEnabled(false);
+                        
+                        if (id_TF.getText().equals(""))
+                            messageDial2.showMessageDialog(null, "ID(학번)를 입력해주세요", "에러 발생", JOptionPane.ERROR_MESSAGE);
+                        else if (id_TF.getText().length() != 7) {
+                            messageDial2.showMessageDialog(null, "ID(학번)는 7자리 입니다. ", "에러 발생", JOptionPane.ERROR_MESSAGE);
+                            id_TF.setText("");
+                        } else if (dao.strContain(id_TF.getText())) {
+                            messageDial2.showMessageDialog(null, "문자가 포함되어있습니다.", "에러 발생", JOptionPane.ERROR_MESSAGE);
+                            id_TF.setText("");
+                        }
+                    }
+                }
+                            
+
+            });
             search_btn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     boolean result = dao.Search(id_TF.getText());
-                    if (result == true) {
+                    if (result) {
                         update_btn.setEnabled(true);
                         delete_btn.setEnabled(true);
-                        text_TF.setText("검색결과 :검색하신 ID가" + text_TF.getText() + "가 존재.");
+                        text_TF.setText("검색결과 :검색하신 ID가" + id_TF.getText() + "가 존재.");
                     } else
-                        text_TF.setText("검색결과 :검색하신 ID가" + text_TF.getText() + "가 존재X.");
+                        text_TF.setText("검색결과 :검색하신 ID가" + id_TF.getText() + "가 존재X.");
                 }
             });
             update_btn.addActionListener(new ActionListener() {
@@ -1202,6 +1485,9 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
                     Student st1 = dao.Search_i(id_i);
                     update_Dialog = new update_Dialog(st1.getId(), st1.getName(), st1.getScore());
                     update_Dialog.setVisible(true);
+                    update_btn.setEnabled(false);
+                    delete_btn.setEnabled(false);
+                    text_TF.setText("");
                     search_dialog.setVisible(false);
 
 
@@ -1212,6 +1498,9 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
                 public void actionPerformed(ActionEvent e) {
                     if (dao.delete(id_TF.getText())) {
                         JOptionPane.showMessageDialog(null, "정상적으로 삭제되었습니다.");
+                        update_btn.setEnabled(false);
+                        delete_btn.setEnabled(false);
+                        text_TF.setText("");
                         search_dialog.setVisible(false);
                     } else
                         JOptionPane.showMessageDialog(null, "삭제 오류 발생", "에러 발생", JOptionPane.ERROR_MESSAGE);
@@ -1294,17 +1583,33 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
             upBtn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    int id_i = dao.update(LTid.getText());
-                    String id = LTid.getText();
-                    String name = Tname.getText();
-                    int score = Integer.parseInt(Tscore.getText());
-                    dao.update_2(id_i, id, name, score);
-                    update_Dialog.setVisible(false);
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
+                    if (!((Integer.parseInt(Tscore.getText()) <= 100) && (Integer.parseInt(Tscore.getText()) >= 1))) {
+                        messageDial2.showMessageDialog(null, "1~100사이 숫자만 입력하세요", "에러 발생", JOptionPane.ERROR_MESSAGE);
+                        Tscore.setText("");
+                    } else {
+                        int id_i = dao.update(LTid.getText());
+                        String id = LTid.getText();
+                        String name = Tname.getText();
+                        int score = Integer.parseInt(Tscore.getText());
+                        dao.update_2(id_i, id, name, score);
+                        update_Dialog.setVisible(false);
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
                     }
+
+
+                }
+            });
+            Tscore.addFocusListener(new FocusListener() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
 
 
                 }
@@ -1313,18 +1618,23 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
 
         }
 
+
     }
 
     //sort_Dialog
     class sort_Dialog extends javax.swing.JDialog {
+
         private javax.swing.JButton Asc_btn;
         private javax.swing.JButton Desc_btn;
-        private javax.swing.JButton Rank_btn;
+        private javax.swing.JButton Rank_btn1;
+        private javax.swing.JButton Rank_btn2;
+        private javax.swing.JButton exit_btn;
+        private javax.swing.JButton name_btn1;
+        private javax.swing.JButton name_btn2;
         private javax.swing.JPanel jPanel1;
 
-
         public sort_Dialog() {
-            setTitle("정렬다이얼로그");
+            setTitle("정렬 다이얼로그");
             setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
             formDesign();
             sort_eventHandler();
@@ -1332,49 +1642,96 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
 
 
         @SuppressWarnings("unchecked")
-        // <editor-fold defaultstate="collapsed" desc="Generated Code">
+
         private void formDesign() {
 
             jPanel1 = new javax.swing.JPanel();
             Asc_btn = new javax.swing.JButton();
             Desc_btn = new javax.swing.JButton();
-            Rank_btn = new javax.swing.JButton();
+            Rank_btn1 = new javax.swing.JButton();
+            Rank_btn2 = new javax.swing.JButton();
+            exit_btn = new javax.swing.JButton();
+            name_btn2 = new javax.swing.JButton();
+            name_btn1 = new javax.swing.JButton();
 
-
+            setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
             jPanel1.setBackground(new java.awt.Color(153, 51, 255));
 
             Asc_btn.setBackground(new java.awt.Color(153, 51, 255));
             Asc_btn.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
             Asc_btn.setForeground(new java.awt.Color(255, 255, 255));
-            Asc_btn.setText("오름차순");
+            Asc_btn.setText("학번순(오름차순)");
 
             Desc_btn.setBackground(new java.awt.Color(102, 102, 255));
             Desc_btn.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
             Desc_btn.setForeground(new java.awt.Color(255, 255, 255));
-            Desc_btn.setText("내림차순");
+            Desc_btn.setText("학번순(내림차순)");
 
-            Rank_btn.setBackground(new java.awt.Color(255, 102, 153));
-            Rank_btn.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-            Rank_btn.setForeground(new java.awt.Color(255, 255, 255));
-            Rank_btn.setText("랭킹순(성적)");
+            Rank_btn1.setBackground(new java.awt.Color(255, 102, 153));
+            Rank_btn1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+            Rank_btn1.setForeground(new java.awt.Color(255, 255, 255));
+            Rank_btn1.setText("성적순(오름차순)");
+
+            Rank_btn2.setBackground(new java.awt.Color(255, 153, 0));
+            Rank_btn2.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+            Rank_btn2.setForeground(new java.awt.Color(255, 255, 255));
+            Rank_btn2.setText("성적순(내림차순)");
+            Rank_btn2.setActionCommand("성적순(내림차순)");
+
+            exit_btn.setBackground(new java.awt.Color(51, 204, 255));
+            exit_btn.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+            exit_btn.setForeground(new java.awt.Color(255, 255, 255));
+            exit_btn.setText("취소 ");
+
+            name_btn2.setBackground(new java.awt.Color(255, 204, 204));
+            name_btn2.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+            name_btn2.setForeground(new java.awt.Color(255, 255, 255));
+            name_btn2.setText("이름순(내림차순)");
+
+            name_btn1.setBackground(new java.awt.Color(204, 204, 255));
+            name_btn1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+            name_btn1.setForeground(new java.awt.Color(255, 255, 255));
+            name_btn1.setText("이름순(오름차순)");
 
             javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
             jPanel1.setLayout(jPanel1Layout);
             jPanel1Layout.setHorizontalGroup(
                     jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Asc_btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(Desc_btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(Rank_btn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 545, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(Rank_btn1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(Asc_btn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
+                                    .addGap(0, 0, Short.MAX_VALUE)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(Desc_btn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(Rank_btn2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(name_btn1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGap(0, 0, 0)
+                                    .addComponent(name_btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(exit_btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             );
             jPanel1Layout.setVerticalGroup(
                     jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(Asc_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(Asc_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(Desc_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGap(0, 0, 0)
-                                    .addComponent(Desc_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(Rank_btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(Rank_btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGap(0, 0, 0)
-                                    .addComponent(Rank_btn, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE))
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                    .addGap(0, 0, Short.MAX_VALUE)
+                                                    .addComponent(exit_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                            .addComponent(name_btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                            .addComponent(name_btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                    .addGap(0, 63, Short.MAX_VALUE))))
             );
 
             javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1385,46 +1742,262 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
             );
             layout.setVerticalGroup(
                     layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(0, 0, Short.MAX_VALUE))
             );
 
             pack();
-        }// </editor-fold>                                                                ㅋ
-        private void sort_eventHandler(){
+        }
+
+        private void sort_eventHandler() {
             Asc_btn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-
+                    if (dao.sortAsc_id()) {
+                        JOptionPane.showMessageDialog(null, "정상적으로 정렬되었습니다.");
+                        result_Ta.setText(dao.read());
+                    } else {
+                        JOptionPane.showMessageDialog(null, "정렬 오류 발생", "정렬 에러 ", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             });
             Desc_btn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-
+                    if (dao.sortDesc_id()) {
+                        JOptionPane.showMessageDialog(null, "정상적으로 정렬되었습니다.");
+                        result_Ta.setText(dao.read());
+                    } else {
+                        JOptionPane.showMessageDialog(null, "정렬 오류 발생", "정렬 에러 ", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             });
-            Rank_btn.addActionListener(new ActionListener() {
+            Rank_btn1.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    
+                    if (dao.sortAsc_score()) {
+                        JOptionPane.showMessageDialog(null, "정상적으로 정렬되었습니다.");
+                        result_Ta.setText(dao.read());
+                    } else {
+                        JOptionPane.showMessageDialog(null, "정렬 오류 발생", "정렬 에러 ", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             });
+            Rank_btn2.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (dao.sortDesc_score()) {
+                        JOptionPane.showMessageDialog(null, "정상적으로 정렬되었습니다.");
+                        result_Ta.setText(dao.read());
+                    } else {
+                        JOptionPane.showMessageDialog(null, "정렬 오류 발생", "정렬 에러 ", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            });
+            name_btn1.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (dao.sortAsc_name()) {
+                        JOptionPane.showMessageDialog(null, "정상적으로 정렬되었습니다.");
+                        result_Ta.setText(dao.read());
+                    } else {
+                        JOptionPane.showMessageDialog(null, "정렬 오류 발생", "정렬 에러 ", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            });
+            name_btn2.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (dao.sortDesc_name()) {
+                        JOptionPane.showMessageDialog(null, "정상적으로 정렬되었습니다.");
+                        result_Ta.setText(dao.read());
+                    } else {
+                        JOptionPane.showMessageDialog(null, "정렬 오류 발생", "정렬 에러 ", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                }
+            });
+            exit_btn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                    JOptionPane.showMessageDialog(null, "종료 하시겠습니까?", "종료", JOptionPane.ERROR_MESSAGE);
+                    sort_Dialog.setVisible(false);
+                }
+            });
+
         }
-
-        /**
-         * @param args the command line arguments
-         */
-        
-
 
     }
 
-    class Asc_compare implements Comparator<Student>{
+    //색변경 다이얼 로그
+    class changeDialog extends javax.swing.JDialog {
 
-        @Override
-        public int compare(Student stu1, Student stu2) {
-            return stu1.getId().compareTo(stu2.getId());
+        private javax.swing.JButton default_theme;
+        private javax.swing.JButton dark_theme;
+        private javax.swing.JButton orange_Theme;
+        private javax.swing.JButton color_cancel;
+        private javax.swing.JPanel jPanel1;
+
+        /**
+         * Creates new form changeDialog
+         */
+        public changeDialog() {
+            setTitle("테마 색 변경 다이얼로그");
+            setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+            formDesign();
+            theme_eventHandler();
         }
+
+        /**
+         * This method is called from within the constructor to initialize the form.
+         * WARNING: Do NOT modify this code. The content of this method is always
+         * regenerated by the Form Editor.
+         */
+        @SuppressWarnings("unchecked")
+        // <editor-fold defaultstate="collapsed" desc="Generated Code">
+        private void formDesign() {
+
+            jPanel1 = new javax.swing.JPanel();
+            dark_theme = new javax.swing.JButton();
+            default_theme = new javax.swing.JButton();
+            orange_Theme = new javax.swing.JButton();
+            color_cancel = new javax.swing.JButton();
+
+
+            dark_theme.setBackground(new java.awt.Color(51, 51, 51));
+            dark_theme.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+            dark_theme.setForeground(new java.awt.Color(255, 255, 255));
+            dark_theme.setText("Dark Theme");
+
+            default_theme.setBackground(new java.awt.Color(102, 0, 255));
+            default_theme.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+            default_theme.setForeground(new java.awt.Color(255, 255, 255));
+            default_theme.setText("Default Theme");
+
+            orange_Theme.setBackground(new java.awt.Color(255, 153, 51));
+            orange_Theme.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+            orange_Theme.setForeground(new java.awt.Color(255, 255, 255));
+            orange_Theme.setText("Orange Theme");
+
+            color_cancel.setBackground(new java.awt.Color(255, 255, 51));
+            color_cancel.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+            color_cancel.setForeground(new java.awt.Color(0, 51, 204));
+            color_cancel.setText("취소");
+
+            javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+            jPanel1.setLayout(jPanel1Layout);
+            jPanel1Layout.setHorizontalGroup(
+                    jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                    .addGap(0, 0, Short.MAX_VALUE)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(color_cancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                                    .addComponent(default_theme, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addGap(0, 0, 0)
+                                                    .addComponent(dark_theme, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addGap(0, 0, 0)
+                                                    .addComponent(orange_Theme, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))))
+            );
+            jPanel1Layout.setVerticalGroup(
+                    jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(default_theme, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(dark_theme, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(orange_Theme, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(0, 0, Short.MAX_VALUE)
+                                    .addComponent(color_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(49, 49, 49))
+            );
+
+            javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+            getContentPane().setLayout(layout);
+            layout.setHorizontalGroup(
+                    layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            );
+            layout.setVerticalGroup(
+                    layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
+            );
+
+            pack();
+        }
+
+        private void theme_eventHandler() {
+            default_theme.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    nowColor = 0;
+                    sideIn_P1.setBackground(new java.awt.Color(54, 34, 89));
+                    sideIn_P2.setBackground(new java.awt.Color(54, 34, 89));
+                    create_P.setBackground(new java.awt.Color(54, 34, 89));
+                    search_P.setBackground(new java.awt.Color(54, 34, 89));
+                    update_P.setBackground(new java.awt.Color(54, 34, 89));
+                    delete_P.setBackground(new java.awt.Color(54, 34, 89));
+                    exit_P.setBackground(new java.awt.Color(54, 34, 89));
+                    save_P.setBackground(new java.awt.Color(54, 34, 89));
+                    load_P.setBackground(new java.awt.Color(54, 34, 89));
+                    change_P.setBackground(new java.awt.Color(54, 34, 89));
+                    numeric_P.setBackground(new java.awt.Color(54, 34, 89));
+                    input_P.setBackground(new java.awt.Color(204, 204, 255));
+                    result_Ta.setBackground(new java.awt.Color(204, 204, 255));
+
+                }
+            });
+            dark_theme.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    nowColor = 1;
+                    sideIn_P1.setBackground(new java.awt.Color(51, 51, 51));
+                    sideIn_P2.setBackground(new java.awt.Color(51, 51, 51));
+                    create_P.setBackground(new java.awt.Color(51, 51, 51));
+                    search_P.setBackground(new java.awt.Color(51, 51, 51));
+                    update_P.setBackground(new java.awt.Color(51, 51, 51));
+                    delete_P.setBackground(new java.awt.Color(51, 51, 51));
+                    save_P.setBackground(new java.awt.Color(51, 51, 51));
+                    load_P.setBackground(new java.awt.Color(51, 51, 51));
+                    exit_P.setBackground(new java.awt.Color(51, 51, 51));
+                    change_P.setBackground(new java.awt.Color(51, 51, 51));
+                    numeric_P.setBackground(new java.awt.Color(51, 51, 51));
+                    input_P.setBackground(new java.awt.Color(102, 102, 102));
+                    result_Ta.setBackground(new java.awt.Color(102, 102, 102));
+
+
+                }
+            });
+            orange_Theme.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    nowColor = 2;
+                    sideIn_P1.setBackground(new java.awt.Color(255, 153, 51));
+                    sideIn_P2.setBackground(new java.awt.Color(255, 153, 51));
+                    create_P.setBackground(new java.awt.Color(255, 153, 51));
+                    search_P.setBackground(new java.awt.Color(255, 153, 51));
+                    update_P.setBackground(new java.awt.Color(255, 153, 51));
+                    delete_P.setBackground(new java.awt.Color(255, 153, 51));
+                    save_P.setBackground(new java.awt.Color(255, 153, 51));
+                    load_P.setBackground(new java.awt.Color(255, 153, 51));
+                    exit_P.setBackground(new java.awt.Color(255, 153, 51));
+                    change_P.setBackground(new java.awt.Color(255, 153, 51));
+                    numeric_P.setBackground(new java.awt.Color(255, 153, 51));
+                    input_P.setBackground(new java.awt.Color(255, 204, 0));
+                    result_Ta.setBackground(new java.awt.Color(255, 204, 0));
+
+                }
+            });
+            color_cancel.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    changeDialog.setVisible(false);
+                }
+            });
+        }
+
+
     }
 
 
