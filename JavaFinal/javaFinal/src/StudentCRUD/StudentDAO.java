@@ -188,7 +188,7 @@ public class StudentDAO {
                check = true;
            }
        }
-       return check;
+       return check; 
     }
     //id 오름차순 정렬
     public boolean sortAsc_id(){
@@ -272,6 +272,7 @@ public class StudentDAO {
             return o2.getName().compareTo(o1.getName());
         }
     }
+
 
 
 }

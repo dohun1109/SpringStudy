@@ -898,7 +898,11 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
             else if (!((Integer.parseInt(score_TF.getText()) <= 100) && (Integer.parseInt(score_TF.getText()) >= 1))) {
                 JOptionPane.showMessageDialog(null, "1~100사이 숫자만 입력하세요", "에러 발생", JOptionPane.ERROR_MESSAGE);
                 score_TF.setText("");
-            } else {
+            }else if (dao.strContain(score_TF.getText())) {
+                JOptionPane.showMessageDialog(null, "문자가 포함되어있습니다.", "에러 발생", JOptionPane.ERROR_MESSAGE);
+                score_TF.setText("");
+            }
+            else {
                 create_B.setEnabled(true);
                 search_P.setEnabled(true);
             }
@@ -906,7 +910,8 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
             if (user_id_TF.getText().equals("") && name_TF.getText().equals("") && score_TF.getText().equals("")) {
                 JOptionPane.showMessageDialog(null, "입력폼에 빈칸이 존재합니다. 모두 작성 후 눌러 주세요!!!", "에러 발생", JOptionPane.ERROR_MESSAGE);
                 create_B.setEnabled(false);
-            } else {
+            }
+            else {
                 create_B.setEnabled(true);
             }
 
@@ -1194,8 +1199,17 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
 
     //종료 클릭시
     private void exit_PMouseClicked(java.awt.event.MouseEvent e) {
-        JOptionPane.showMessageDialog(null, "종료 하시겠습니까?", "종료", JOptionPane.ERROR_MESSAGE);
-        System.exit(0);
+        if (exitMessageDialog("정말로 종료 하시겠습니까?", "종료 확인 메시지")) {
+            System.exit(0);
+        }
+    }
+
+    private boolean exitMessageDialog(String message, String title) {
+        int optionType = JOptionPane.DEFAULT_OPTION;
+        int messageType = JOptionPane.INFORMATION_MESSAGE;
+        Object[] options = {"확인", "취소"};
+        int result = JOptionPane.showOptionDialog(null, message, title, optionType, messageType, null, options, options[0]);
+        return result == JOptionPane.YES_OPTION;
     }
 
     //수정 클릭시
@@ -1451,7 +1465,7 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
                     if (e.getSource().equals(id_TF)) {
                         update_btn.setEnabled(false);
                         delete_btn.setEnabled(false);
-                        
+
                         if (id_TF.getText().equals(""))
                             messageDial2.showMessageDialog(null, "ID(학번)를 입력해주세요", "에러 발생", JOptionPane.ERROR_MESSAGE);
                         else if (id_TF.getText().length() != 7) {
@@ -1463,7 +1477,7 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
                         }
                     }
                 }
-                            
+
 
             });
             search_btn.addActionListener(new ActionListener() {
@@ -1592,12 +1606,10 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
                         String name = Tname.getText();
                         int score = Integer.parseInt(Tscore.getText());
                         dao.update_2(id_i, id, name, score);
+                        JOptionPane.showMessageDialog(null, "정상적으로 수정되었습니다.");
+                        result_Ta.setText(dao.read());
                         update_Dialog.setVisible(false);
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException ex) {
-                            ex.printStackTrace();
-                        }
+                        
                     }
 
 
