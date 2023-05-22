@@ -890,16 +890,20 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
         } else if (e.getSource().equals(name_TF)) {
             if (name_TF.getText().equals(""))
                 JOptionPane.showMessageDialog(null, "이름을 입력해주세요", "에러 발생", JOptionPane.ERROR_MESSAGE);
-            else
+            else if (dao.intContain(name_TF.getText())) {
+                JOptionPane.showMessageDialog(null, "숫자가 포함되어있습니다.", "에러 발생", JOptionPane.ERROR_MESSAGE);
+                name_TF.setText("");
+            } else
                 score_TF.setEnabled(true);
         } else if (e.getSource().equals(score_TF)) {
             if (score_TF.getText().equals(""))
                 JOptionPane.showMessageDialog(null, "성적을 입력해주세요", "에러 발생", JOptionPane.ERROR_MESSAGE);
+            else if (dao.strContain(score_TF.getText())) {
+                messageDial2.showMessageDialog(null, "문자가 포함되어있습니다.", "에러 발생", JOptionPane.ERROR_MESSAGE);
+                score_TF.setText("");
+            }
             else if (!((Integer.parseInt(score_TF.getText()) <= 100) && (Integer.parseInt(score_TF.getText()) >= 1))) {
                 JOptionPane.showMessageDialog(null, "1~100사이 숫자만 입력하세요", "에러 발생", JOptionPane.ERROR_MESSAGE);
-                score_TF.setText("");
-            }else if (dao.strContain(score_TF.getText())) {
-                JOptionPane.showMessageDialog(null, "문자가 포함되어있습니다.", "에러 발생", JOptionPane.ERROR_MESSAGE);
                 score_TF.setText("");
             }
             else {
@@ -1129,18 +1133,18 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
     // 정렬 패널
     private void numeric_P_mouseEntered(java.awt.event.MouseEvent e) {
         if (nowColor == 0) {
-            if (af_Check) {
+            if (dao.data_Check()) {
                 numeric_P.setBackground(new java.awt.Color(153, 153, 255));
             } else
                 numeric_P.setBackground(new java.awt.Color(54, 34, 89));
         } else if (nowColor == 1) {
-            if (af_Check) {
+            if (dao.data_Check()) {
                 numeric_P.setBackground(new java.awt.Color(0, 0, 0));
             } else
                 numeric_P.setBackground(new java.awt.Color(51, 51, 51));
 
         } else if (nowColor == 2) {
-            if (af_Check) {
+            if (dao.data_Check()) {
                 numeric_P.setBackground(new java.awt.Color(255, 102, 0));
             } else
                 numeric_P.setBackground(new java.awt.Color(255, 153, 51));
@@ -1265,7 +1269,7 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
 
     //정렬하기 클릭 시
     private void numeric_PMouseClicked(java.awt.event.MouseEvent e) {
-        if (af_Check) {
+        if (dao.data_Check()) {
             sort_Dialog.setVisible(true);
         }
 
@@ -1380,7 +1384,7 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
             text_TF.setBackground(new java.awt.Color(110, 203, 244));
             text_TF.setColumns(15);
             text_TF.setForeground(new java.awt.Color(255, 255, 255));
-            text_TF.setRows(1);
+            text_TF.setRows(2);
             text_TF.setBorder(null);
             text_TF.setDisabledTextColor(new java.awt.Color(255, 255, 255));
             jScrollPane2.setViewportView(text_TF);
@@ -1411,8 +1415,8 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
                                                     .addGap(138, 138, 138)
                                                     .addComponent(id_TF, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                                    .addGap(123, 123, 123)
-                                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                    .addGap(120, 120, 120)
+                                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addContainerGap(21, Short.MAX_VALUE))
             );
             jPanel1Layout.setVerticalGroup(
@@ -1424,9 +1428,9 @@ public class StudentUI extends javax.swing.JFrame implements ActionListener, Foc
                                     .addComponent(id_L)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(id_TF, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                                    .addGap(17, 17, 17)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                             .addComponent(search_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(update_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)

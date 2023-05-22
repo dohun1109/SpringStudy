@@ -181,6 +181,15 @@ public class StudentDAO {
 
 
     }
+    //정렬 시 데이터가 2개 이상이여야 정렬 가능
+    public boolean data_Check(){
+        if (al.size() >= 2){
+            return true;
+        }
+        return false;
+    }
+
+    //문자 또는 숫자가 포함되어 있는지 Check
     public boolean strContain(String id){
         boolean check = false;
        for(char c : id.toCharArray()){
@@ -190,6 +199,15 @@ public class StudentDAO {
        }
        return check; 
     }
+
+    public boolean intContain(String name){
+        boolean check = false;
+        if (name.matches(".*[0-9].*")){
+            check = true;
+        }
+        return check;
+    }
+
     //id 오름차순 정렬
     public boolean sortAsc_id(){
         Collections.sort(al,new Asc_compare());
