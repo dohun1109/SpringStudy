@@ -5,7 +5,8 @@
  import java.util.Comparator;
  import java.util.List;
 
- class DescendingStudentComparator implements Comparator<Student> {
+ class
+ DescendingStudentComparator implements Comparator<Student> {
 
      @Override
      public int compare(Student stu1, Student stu2) {

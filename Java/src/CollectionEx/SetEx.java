@@ -1,2 +1,5 @@
-package CollectionEx;public class SetEx {
+package CollectionEx;
+
+public class SetEx {
+    
 }

@@ -148,12 +148,13 @@ public class StudentDAO {
             String text;
             while((text = br.readLine())!= null){
                 String text1 = text.replace("[","");
-//                System.out.println(text1);        <테스트 코드>
+                System.out.println(text1);
                 String text2 = text1.replace("]","");
-//                System.out.println(text2);
+                System.out.println(text2);
                 String text3 = text2.replace(" ","");
+                System.out.println(text3);
                 String[] values = text3.split(",");
-//                System.out.println(Arrays.toString(values));
+                System.out.println(Arrays.toString(values));
                 al.clear();
 
                 for (int i = 0; i<values.length; i++){

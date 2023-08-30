@@ -1,2 +1,11 @@
-package com.ync.QuizApplication.repository;public interface QuizRepository {
+package com.ync.QuizApplication.repository;
+
+import com.ync.QuizApplication.entity.Quiz;
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.CrudRepository;
+
+// Quiz 테이블 : RepositoryImpl
+public interface QuizRepository extends CrudRepository<Quiz, Integer> {
+    @Query("SELECT id FROM quiz ORDER BY RANDOM() limit 1")
+    Integer getRandomId();
 }
