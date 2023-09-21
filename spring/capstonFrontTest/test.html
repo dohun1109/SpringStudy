@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"/>
+	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script>
+     function changeFn(){
+		var city  = document.getElementById("city");
+		var value = (city.options[city.selectedIndex].value);
+		alert(value);
+		
+		/* 		
+		var selectedindex = city.selectedIndex;
+		alert("value = "+value+" , selectedindex = "+selectedindex); 
+		*/
+	};
+    </script>
+
+    <title>Document</title>
+
+
+</head>
+<body>
+    <select id="city" onchange="changeFn()">
+		<option name="city" value="seoul">서울</option>
+		<option name="city" value="busan">부산</option>
+		<option name="city" value="jeju">제주</option>
+	</select>
+</html>
