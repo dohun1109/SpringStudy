@@ -37,12 +37,13 @@ public class AppConfig {
      * 셀제로 테스시 호출되는 결과
      * call AppConfig.memberService -1번
      * call AppConfig.memberRepository -1번
-     * call AppConfig.orderService -1번 
+     * call AppConfig.orderService -1번
+     * commit 
      */
 
     @Bean   //스프링 컨테이너 등록
     public MemberService memberService() {
-        System.out.println("call AppConfig.memberService");
+        System.out.println("call AppConfig.memberService ");
         return new MemberServiceImpl(memberRepository());
     }
 
