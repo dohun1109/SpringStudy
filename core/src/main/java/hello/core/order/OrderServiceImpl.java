@@ -3,15 +3,28 @@ package hello.core.order;
 import hello.core.discount.DiscountPolicy;
 import hello.core.member.Member;
 import hello.core.member.MemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class OrderServiceImpl implements OrderService {
+    private final MemberRepository memberRepository;
+    //객체에서 final 을 사용하면 참조타입을 변경할 수 없다. 그러나 생성된 객체의 주소를 저장하는 방식이이게 만약 arraylist를 생성했다고,
+    //가정하면 arraylist의 내부 값은 변경이 가능하다 . 이같은 점이 변수에 final 을 선언하는 것과의 차이이다.
 
+
+    //    private final DiscountPolicy discountPolicy = new FixDiscountPolicy();
+//    private final DiscountPolicy discountPolicy = new RateDiscountPolicy(); -> DIP 위반
+    private final DiscountPolicy discountPolicy; //-> final 은 반드시 값이 할당 되어야 한다.
+    //NUll pointer Exception
+
+
+    @Autowired
     public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
         this.memberRepository = memberRepository;
         this.discountPolicy = discountPolicy;
     }
-
+    
     /**
      * 자바 에서 final 키워드는 여러 컨텍스트에서 단 한 번만 할당 될 수 있는 entity 를 정의할
      * 때 사용된다.
@@ -28,15 +41,6 @@ public class OrderServiceImpl implements OrderService {
      * final 클래스
      */
     
-    private final MemberRepository memberRepository;
-    //객체에서 final 을 사용하면 참조타입을 변경할 수 없다. 그러나 생성된 객체의 주소를 저장하는 방식이이게 만약 arraylist를 생성했다고,
-    //가정하면 arraylist의 내부 값은 변경이 가능하다 . 이같은 점이 변수에 final 을 선언하는 것과의 차이이다.
-
-    
-//    private final DiscountPolicy discountPolicy = new FixDiscountPolicy();
-//    private final DiscountPolicy discountPolicy = new RateDiscountPolicy(); -> DIP 위반
-    private final DiscountPolicy discountPolicy; //-> final 은 반드시 값이 할당 되어야 한다.
-    //NUll pointer Exception
 
     @Override
     public Order createOrder(Long memberId, String itemName, int itemPrice) {

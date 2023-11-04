@@ -3,13 +3,15 @@ package hello.core.order;
 import hello.core.discount.DiscountPolicy;
 import hello.core.discount.FixDiscountPolicy;
 import hello.core.discount.RateDiscountPolicy;
+import hello.core.member.MemberRepository;
 import hello.core.member.MemberService;
 import hello.core.member.MemberServiceImpl;
 import hello.core.member.MemoryMemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Configuration //-> 안 붙여도 스프링 빈에 등록은 된다.
 public class AppConfig {
 
     //@Bean memberService -> new MemoryMemberRepository() 호출
@@ -41,6 +43,8 @@ public class AppConfig {
      * commit 
      */
 
+    
+    
     @Bean   //스프링 컨테이너 등록
     public MemberService memberService() {
         System.out.println("call AppConfig.memberService ");
