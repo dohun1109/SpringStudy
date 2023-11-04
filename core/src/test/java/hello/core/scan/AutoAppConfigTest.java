@@ -9,17 +9,23 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import static org.assertj.core.api.Assertions.*;
 
 public class AutoAppConfigTest {
-
+                                                    
 
     @Test
     void basicScan(){
+
+        
         AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(AutoAppConfig.class);
-
-
         MemberService bean = ac.getBean(MemberService.class);
         assertThat(bean).isInstanceOf(MemberService.class);
+
+        
     }
 
+
+    //bean 이름을 중복 등록시 -> ConflictingBeanDefinitionException 예외가 터진다.
+    
+    
 
     
 }

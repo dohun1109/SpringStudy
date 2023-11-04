@@ -24,21 +24,29 @@ public class ComponentFilterAppConfigTest {
 
 
         assertThrows(
-                NoSuchBeanDefinitionException.class,
+                NoSuchBeanDefinitionException.class,        //Bean 을 찾기 못했다는 예외 
                 () ->  ac.getBean("beanB", BeanB.class)
         );
+        
+        
 
-        
-        
 
     }
 
     @Configuration
     @ComponentScan(
             
-            includeFilters = @Filter(type = FilterType.ANNOTATION, classes = MyIncludeComponent.class),
-            excludeFilters = @Filter(type = FilterType.ANNOTATION, classes = MyExcludeComponent.class)
+            includeFilters ={ @Filter(type = FilterType.ANNOTATION, classes = MyIncludeComponent.class)
+            },
+            excludeFilters = {
+                    @Filter(type = FilterType.ANNOTATION, classes = MyExcludeComponent.class),
+                    @Filter(type = FilterType.ASSIGNABLE_TYPE, classes = BeanA.class)
+            }
+
+            
     )
+
+
 
     
     static class ComponentFilterAppConfig {
