@@ -25,7 +25,7 @@ public class AutoAppConfigTest {
         MemberRepository memberRepository = bean.getMemberRepository();
         System.out.println("memberRepository = " + memberRepository);
 
-
+         
     }
 
 

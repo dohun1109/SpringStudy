@@ -14,7 +14,7 @@ import org.springframework.context.annotation.FilterType;
 //        basePackages = "hello.core.member", //어디서 부터 찾는지 시작지점 지정(이게 없으면 모든 자바코드 및 라이브러리까지 다 뒤저본다, 오래걸린다.)
 //        basePackageClasses = AutoAppConfig.class,
 
-        // 위의 범위를 지정하지 않고 default 로 설정하게 되면, 현재 @ComponentSacn 이 있는 클래스의
+        // 위의 범위를 지정하지 않고 default 로 설정하게 되면, 현재 @ComponentScan 이 있는 클래스의
         //패키지 하위를 전부 탐색환다.
 
         /* 권장하는 방법
@@ -33,6 +33,6 @@ public class AutoAppConfig {
 //    MemberRepository memberRepository(){
 //        return new MemoryMemberRepository();
 //    }
-
+    
 
 }
