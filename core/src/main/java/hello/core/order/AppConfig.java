@@ -42,7 +42,7 @@ public class AppConfig {
      * call AppConfig.orderService -1번
      * commit 
      */
-
+    
     
     
     @Bean   //스프링 컨테이너 등록
@@ -53,8 +53,10 @@ public class AppConfig {
 
     @Bean
     public MemoryMemberRepository memberRepository() {
+        
         System.out.println("call AppConfig.memberRepository");
         return new MemoryMemberRepository();
+        
     }
 
     @Bean
