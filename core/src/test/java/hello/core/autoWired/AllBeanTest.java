@@ -47,7 +47,6 @@ public class AllBeanTest {
             this.policies = policies;
             System.out.println("policyMap = " + policyMap);
             System.out.println("policies = " + policies);
-
         }
 
 
