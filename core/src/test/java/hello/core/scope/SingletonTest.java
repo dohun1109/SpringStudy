@@ -23,8 +23,7 @@ public class SingletonTest {
         SingletonBean bean2 = ac.getBean(SingletonBean.class);
         System.out.println("SingletonBean1 = " + bean1);
         System.out.println("SingletonBean2 = " + bean2);
-        assertThat(bean1).isSameAs(bean2);
-
+        assertThat(bean1).isSameAs(bean2);  //== reference type
         ac.close();
 
     }
@@ -41,9 +40,6 @@ public class SingletonTest {
         public void destroy(){
             System.out.println("SingletonBean.destroy");
         }
-
-
-
 
     }
 

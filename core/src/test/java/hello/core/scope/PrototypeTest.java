@@ -17,14 +17,14 @@ public class PrototypeTest {
     @Test
     void PrototypeFind(){
 
-        ConfigurableApplicationContext ac = new AnnotationConfigApplicationContext(PrototypeBean.class);
+        ConfigurableApplicationContext ac = new AnnotationConfigApplicationContext(PrototypeBean.class);//요기안에 클래스를 넣으면 @Component 로 인식해서 컴포넌트 스캔을 한다. 
         System.out.println("find prototypeBean1");
         PrototypeBean bean1 = ac.getBean(PrototypeBean.class);
         System.out.println("find prototypeBean2");
         PrototypeBean bean2 = ac.getBean(PrototypeBean.class);
         System.out.println("bean1 = " + bean1);
         System.out.println("bean2 = " + bean2);
-        assertThat(bean1).isNotSameAs(bean2);
+        assertThat(bean1).isNotSameAs(bean2); //!=
 
 
         bean1.destroy();
@@ -49,10 +49,13 @@ public class PrototypeTest {
         public void destroy(){
             System.out.println("SingletonBean.destroy");
         }
+
+
+
     }
+                                                                           
 
 
 
 
-
-}
+}                                                                                       
