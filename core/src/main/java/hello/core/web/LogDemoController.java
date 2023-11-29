@@ -15,20 +15,19 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 public class LogDemoController {
     private final LogDemoService logDemoService;
-    private final ObjectProvider<MyLogger> myLoggerProvider;
-//    private final MyLogger myLogger;
+    private final MyLogger myLogger;
     @RequestMapping("log-demo")
     @ResponseBody
-    public String logDemo(HttpServletRequest request) throws InterruptedException {
+    public String logDemo(HttpServletRequest request) {
+
         String requestURL = request.getRequestURL().toString();
-        MyLogger myLogger = myLoggerProvider.getObject();
+
+        System.out.println("myLogger = " + myLogger.getClass());
         myLogger.setRequestURL(requestURL);
 
-
+        
         myLogger.log("controller test");
-        Thread.sleep(1000); //uuid 여러 http 요청이 왔을때 구분되는지 확인 
         logDemoService.logic("testId");
         return "OK";
-        
     }
 }
