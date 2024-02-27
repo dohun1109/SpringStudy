@@ -1,2 +1,23 @@
-package kr.co.hanbit.product.management2.domain;public interface ProductRepository {
+package kr.co.hanbit.product.management2.domain;
+
+
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+
+public interface ProductRepository {
+
+    Product add(Product product);
+
+    Product findById(Long id);
+
+    List<Product> findAll();
+
+    List<Product> findByNameContaining(String name);
+
+    Product update(Product product);
+
+    void delete(Long id);
+
 }
